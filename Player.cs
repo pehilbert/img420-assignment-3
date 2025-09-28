@@ -6,7 +6,8 @@ public partial class Player : CharacterBody2D
 {
 	[Export] public int Speed = 400;
 	[Export] public int BulletSpeed = 800;
-	[Export] public float FireRate = 5.0f; // bullets/second
+	[Export] public double FireRate = 5.0f; // bullets/second
+	[Export] public double Damage = 1.0f;
 	[Export] public PackedScene BulletScene;
 	private bool canFire = true;
 	private Timer fireTimer;
@@ -15,13 +16,10 @@ public partial class Player : CharacterBody2D
 	{
 		base._Ready();
 
-		fireTimer = GetNode<Timer>("FireTimer");
-
-		if (fireTimer != null)
-		{
-			fireTimer.WaitTime = 1.0f / FireRate;
-			fireTimer.Timeout += () => canFire = true;
-		}
+		fireTimer = new Timer();
+		fireTimer.WaitTime = 1.0f / FireRate;
+		fireTimer.Timeout += () => canFire = true;
+		AddChild(fireTimer);
 	}
 
 	public override void _ExitTree()
@@ -78,15 +76,9 @@ public partial class Player : CharacterBody2D
 	{
 		if (canFire)
 		{
-			// Reset canFire, start cooldown timer
 			canFire = false;
+			fireTimer.Start();
 
-			if (fireTimer != null)
-			{
-				fireTimer.Start();
-			}
-
-			// Fire the bullet
 			var bullet = BulletScene.Instantiate<RigidBody2D>();
 			bullet.Position = Position;
 			bullet.LookAt(GetViewport().GetMousePosition());
@@ -95,6 +87,23 @@ public partial class Player : CharacterBody2D
 			// Prevent bullet from colliding with the player
 			bullet.CollisionLayer = 2;
 			bullet.CollisionMask = 0xFFFFFFFE;
+
+			// Enable contact monitoring for collision detection
+			bullet.ContactMonitor = true;
+
+			bullet.BodyEntered += (Node body) =>
+			{
+				GD.Print("Bullet hit: " + body.Name);
+				if (!(body is Player))
+				{
+					var entityManager = body.GetNodeOrNull<EntityManager>("EntityManager");
+					if (entityManager != null)
+					{
+						entityManager.TakeDamage(Damage);
+					}
+					bullet.QueueFree();
+				}
+			};
 
 			GetParent().AddChild(bullet);
 		}

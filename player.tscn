@@ -13,7 +13,3 @@ uv = PackedVector2Array(-128, -56, -128, 32, 32, -8)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-24, -16, -24, 16, 32, 0)
-
-[node name="FireTimer" type="Timer" parent="."]
-
-[connection signal="timeout" from="FireTimer" to="." method="_on_fire_timer_timeout"]

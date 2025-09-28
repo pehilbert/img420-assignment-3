@@ -5,6 +5,9 @@ size = Vector2(24, 4)
 
 [node name="Bullet" type="RigidBody2D"]
 gravity_scale = 0.0
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 1
 
 [node name="Line2D" type="Line2D" parent="."]
 points = PackedVector2Array(0, 0, 24, 0)
