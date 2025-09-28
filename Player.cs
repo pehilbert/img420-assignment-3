@@ -43,7 +43,7 @@ public partial class Player : RigidBody2D
 		base._PhysicsProcess(delta);
 
 		// Look at mouse position
-		var mousePosition = GetViewport().GetMousePosition();
+		var mousePosition = GetGlobalMousePosition();
 		var sprite = GetNodeOrNull<Polygon2D>("Polygon2D");
 		sprite.LookAt(mousePosition);
 
@@ -87,7 +87,7 @@ public partial class Player : RigidBody2D
 
 			var bullet = BulletScene.Instantiate<RigidBody2D>();
 			bullet.Position = Position;
-			bullet.LookAt(GetViewport().GetMousePosition());
+			bullet.LookAt(GetGlobalMousePosition());
 			bullet.LinearVelocity = new Vector2(BulletSpeed, 0).Rotated(bullet.Rotation);
 
 			// Enable contact monitoring for collision detection
