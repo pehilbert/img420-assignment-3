@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://dk6qx2dsegg1j"]
+
+[ext_resource type="Script" uid="uid://b6y23mxclp0at" path="res://Player.cs" id="1_4flbx"]
+[ext_resource type="PackedScene" uid="uid://0spite35euhj" path="res://bullet.tscn" id="2_onrkg"]
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_4flbx")
+BulletScene = ExtResource("2_onrkg")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-24, -16, -24, 16, 32, 4.76837e-07)
+uv = PackedVector2Array(-128, -56, -128, 32, 32, -8)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-24, -16, -24, 16, 32, 0)
+
+[node name="FireTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="FireTimer" to="." method="_on_fire_timer_timeout"]
