@@ -15,6 +15,12 @@ public partial class EntityManager : Node2D
 	[Signal]
 	public delegate void HealthChangedEventHandler(double currentHealth, double maxHealth);
 
+	[Signal]
+	public delegate void DiedEventHandler();
+
+	[Signal]
+	public delegate void InvincibilityChangedEventHandler(bool invincible);
+
 	public override void _Ready()
 	{
 		CurrentHealth = MaxHealth;
@@ -25,7 +31,7 @@ public partial class EntityManager : Node2D
 			iFramesTimer.WaitTime = IFramesDuration;
 			iFramesTimer.Timeout += () => {
 				Invincible = false;
-				Modulate = new Color(1, 1, 1, 1);
+				EmitSignal(SignalName.InvincibilityChanged, Invincible);
 			};
 			AddChild(iFramesTimer);
 		} 
@@ -41,7 +47,7 @@ public partial class EntityManager : Node2D
 		{
 			Invincible = true;
 			iFramesTimer.Start();
-			Modulate = IFramesModulate;
+			EmitSignal(SignalName.InvincibilityChanged, Invincible);
 		}
 	}
 
@@ -51,7 +57,7 @@ public partial class EntityManager : Node2D
 		{
 			CurrentHealth = Math.Max(CurrentHealth - damage, 0);
 			EmitSignal(SignalName.HealthChanged, CurrentHealth, MaxHealth);
-			GD.Print("Took damage, current health: " + CurrentHealth);
+			GD.Print(GetParent().Name + " took damage, current health: " + CurrentHealth);
 
 			if (CurrentHealth <= 0)
 			{

@@ -2,12 +2,14 @@ using Godot;
 using System;
 using static Godot.SpringBoneSimulator3D;
 
-public partial class Player : CharacterBody2D
+public partial class Player : RigidBody2D
 {
 	[Export] public int Speed = 400;
 	[Export] public int BulletSpeed = 800;
 	[Export] public double FireRate = 5.0f; // bullets/second
 	[Export] public double Damage = 1.0f;
+	[Export] public Color InvincibilityColor = new Color(1, 1, 1, 0.5f);
+
 	[Export] public PackedScene BulletScene;
 	private bool canFire = true;
 	private Timer fireTimer;
@@ -20,15 +22,19 @@ public partial class Player : CharacterBody2D
 		fireTimer.WaitTime = 1.0f / FireRate;
 		fireTimer.Timeout += () => canFire = true;
 		AddChild(fireTimer);
-	}
 
-	public override void _ExitTree()
-	{
-		base._Ready();
-
-		if (fireTimer != null)
+		var entityManager = GetNodeOrNull<EntityManager>("EntityManager");
+		
+		if (entityManager != null)
 		{
-			fireTimer.Timeout -= () => canFire = true;
+			entityManager.InvincibilityChanged += (bool invincible) =>
+			{
+				var sprite = GetNodeOrNull<Polygon2D>("Polygon2D");
+				if (sprite != null)
+				{
+					sprite.Modulate = invincible ? InvincibilityColor : sprite.Color;
+				}
+			};
 		}
 	}
 
@@ -38,7 +44,8 @@ public partial class Player : CharacterBody2D
 
 		// Look at mouse position
 		var mousePosition = GetViewport().GetMousePosition();
-		LookAt(mousePosition);
+		var sprite = GetNodeOrNull<Polygon2D>("Polygon2D");
+		sprite.LookAt(mousePosition);
 
 		// Move the player
 		Vector2 moveDirection = Vector2.Zero;
@@ -63,9 +70,8 @@ public partial class Player : CharacterBody2D
 			moveDirection.X += 1;
 		}
 
-		Velocity = moveDirection.Normalized() * Speed;
-		MoveAndSlide();
-
+		LinearVelocity = moveDirection.Normalized() * Speed;
+		
 		if (Input.IsActionPressed("fire"))
 		{
 			fire();
@@ -84,16 +90,11 @@ public partial class Player : CharacterBody2D
 			bullet.LookAt(GetViewport().GetMousePosition());
 			bullet.LinearVelocity = new Vector2(BulletSpeed, 0).Rotated(bullet.Rotation);
 
-			// Prevent bullet from colliding with the player
-			bullet.CollisionLayer = 2;
-			bullet.CollisionMask = 0xFFFFFFFE;
-
 			// Enable contact monitoring for collision detection
 			bullet.ContactMonitor = true;
 
 			bullet.BodyEntered += (Node body) =>
 			{
-				GD.Print("Bullet hit: " + body.Name);
 				if (!(body is Player))
 				{
 					var entityManager = body.GetNodeOrNull<EntityManager>("EntityManager");
