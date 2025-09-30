@@ -6,11 +6,16 @@ public partial class EntityManager : Node2D
 	[Export] public double MaxHealth = 3f;
 	[Export] public double IFramesDuration = 1f;
 	[Export] public Color IFramesModulate = new Color(1, 1, 1, 0.5f);
+	[Export] public bool HealthBarVisible = true;
+	[Export] public double HealthBarVisibilityDuration = 2f;
 
-	public double CurrentHealth;
+    public double CurrentHealth;
 	public bool Invincible = false;
 
 	private Timer iFramesTimer;
+	private Timer healthBarTimer;
+	private Polygon2D healthBar;
+	private Polygon2D healthBarProgress;
 
 	[Signal]
 	public delegate void HealthChangedEventHandler(double currentHealth, double maxHealth);
@@ -20,6 +25,12 @@ public partial class EntityManager : Node2D
 
 	[Signal]
 	public delegate void InvincibilityChangedEventHandler(bool invincible);
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        GlobalRotationDegrees = 0; // Prevent rotation with parent
+    }
 
 	public override void _Ready()
 	{
@@ -39,9 +50,35 @@ public partial class EntityManager : Node2D
 		{
 			iFramesTimer = null;
 		}
-	}
 
-	public void IFrames()
+		healthBar = GetNode<Polygon2D>("HealthBar");
+		healthBarProgress = healthBar?.GetNode<Polygon2D>("HealthBarProgress");
+		
+		if (healthBar != null)
+		{
+			healthBar.Visible = false;
+        }
+
+        if (healthBar != null && healthBarProgress != null && HealthBarVisible)
+		{
+			healthBarTimer = new Timer();
+			healthBarTimer.WaitTime = HealthBarVisibilityDuration;
+			healthBarTimer.Timeout += () =>
+			{
+				healthBar.Visible = false;
+			};
+			AddChild(healthBarTimer);
+
+            HealthChanged += (double currentHealth, double maxHealth) =>
+			{
+				healthBarProgress.Scale = new Vector2((float)(currentHealth / maxHealth), 1);
+				healthBar.Visible = true;
+				healthBarTimer.Start();
+            };
+		}
+    }
+
+    public void IFrames()
 	{
 		if (!Invincible && iFramesTimer != null)
 		{

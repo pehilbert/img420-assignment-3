@@ -9,8 +9,8 @@ public partial class Player : RigidBody2D
 	[Export] public double FireRate = 5.0f; // bullets/second
 	[Export] public double Damage = 1.0f;
 	[Export] public Color InvincibilityColor = new Color(1, 1, 1, 0.5f);
-
 	[Export] public PackedScene BulletScene;
+
 	private bool canFire = true;
 	private Timer fireTimer;
 

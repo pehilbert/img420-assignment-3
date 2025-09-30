@@ -4,3 +4,14 @@
 
 [node name="EntityManager" type="Node2D"]
 script = ExtResource("1_x4ka6")
+
+[node name="HealthBar" type="Polygon2D" parent="."]
+color = Color(0.757348, 0.368019, 0.468212, 1)
+polygon = PackedVector2Array(-40, 0, -40, 8, 40, 8, 40, -1.90735e-06)
+uv = PackedVector2Array(-120, -40, -120, -16, 120, -16, 120, -40)
+
+[node name="HealthBarProgress" type="Polygon2D" parent="HealthBar"]
+position = Vector2(-40, 0)
+color = Color(0.254902, 1, 0.470588, 1)
+polygon = PackedVector2Array(-7.62939e-06, 0, 7.62939e-06, 8, 80, 8, 80, -1.90735e-06)
+uv = PackedVector2Array(-120, -40, -120, -16, 120, -16, 120, -40)

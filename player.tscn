@@ -15,6 +15,7 @@ script = ExtResource("1_4flbx")
 BulletScene = ExtResource("2_onrkg")
 
 [node name="EntityManager" parent="." instance=ExtResource("3_i3pqv")]
+HealthBarVisible = false
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-24, -16, -24, 16, 32, 4.76837e-07)

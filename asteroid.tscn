@@ -17,6 +17,7 @@ angular_velocity = 0.0174533
 script = ExtResource("1_p0ukn")
 
 [node name="EntityManager" parent="." instance=ExtResource("1_u87q6")]
+position = Vector2(1, 56)
 IFramesDuration = 0.0
 
 [node name="Polygon2D" type="Polygon2D" parent="."]

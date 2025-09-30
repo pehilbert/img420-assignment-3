@@ -17,21 +17,17 @@ public partial class Enemy : RigidBody2D
 	private RigidBody2D _target;
 	public override void _Ready()
 	{
-		_detectionArea = GetNode<Area2D>("DetectionArea");
+        _detectionArea = GetNode<Area2D>("DetectionArea");
 		_detectionArea.BodyEntered += OnBodyEntered;
 		_detectionArea.BodyExited += OnBodyExited;
-		var viewportRect = GetViewportRect();
-		var randomX = GD.Randf() * viewportRect.Size.X;
-		var randomY = GD.Randf() * viewportRect.Size.Y;
-		Position = new Vector2(randomX, randomY);
 
 		var randomAngle = GD.Randf() * Mathf.Pi * 2;
 		var randomVelocity = new Vector2(Mathf.Cos(randomAngle), Mathf.Sin(randomAngle)) * MaxSpeed;
 		LinearVelocity = randomVelocity;
 
-		// Optional: Make boid face its direction of movement
 		LookAt(Position + LinearVelocity);
 	}
+
 	public void SetTarget(RigidBody2D Target)
 	{
 		_target = Target;
@@ -52,7 +48,6 @@ public partial class Enemy : RigidBody2D
 		LinearVelocity = LinearVelocity.LimitLength(MaxSpeed);
 		//GD.Print($"The value of my variable is: {Velocity}");
 
-		// Optional: Make boid face its direction of movement
 		LookAt(Position + LinearVelocity);
 	}
 
