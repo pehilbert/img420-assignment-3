@@ -11,10 +11,15 @@ radius = 30.0
 collision_mask = 5
 mass = 20.0
 gravity_scale = 0.0
+custom_integrator = true
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 2
 script = ExtResource("1_4flbx")
 BulletScene = ExtResource("2_onrkg")
 
 [node name="EntityManager" parent="." instance=ExtResource("3_i3pqv")]
+MaxHealth = 5.0
 HealthBarVisible = false
 
 [node name="Polygon2D" type="Polygon2D" parent="."]

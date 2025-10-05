@@ -1,0 +1,115 @@
+[gd_scene load_steps=8 format=3 uid="uid://dv3oqegdy8j8r"]
+
+[ext_resource type="Script" uid="uid://biokldiplrayt" path="res://Level.cs" id="1_0b4ue"]
+[ext_resource type="PackedScene" uid="uid://cbob18yy2hqcu" path="res://enemy.tscn" id="2_1ainy"]
+[ext_resource type="PackedScene" uid="uid://bvotkpgyp4vvw" path="res://asteroid.tscn" id="3_n6hdu"]
+[ext_resource type="Script" uid="uid://sim4g8urmkr1" path="res://Hud.cs" id="4_1ainy"]
+[ext_resource type="PackedScene" uid="uid://dk6qx2dsegg1j" path="res://player.tscn" id="4_km5ld"]
+[ext_resource type="Script" uid="uid://bmq4kxftnyi4y" path="res://DeathScreen.cs" id="5_1ainy"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_f2txt"]
+load_path = "res://.godot/imported/background.jpg-73537266ec22d7a925b3e0de9a2aabda.ctex"
+
+[node name="Level" type="Node2D"]
+script = ExtResource("1_0b4ue")
+EnemyScene = ExtResource("2_1ainy")
+AsteroidScene = ExtResource("3_n6hdu")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("4_1ainy")
+
+[node name="ScoreLabel" type="Label" parent="HUD"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 166.0
+offset_bottom = 66.0
+theme_override_font_sizes/font_size = 42
+text = "Score: 0"
+
+[node name="HealthLabel" type="Label" parent="HUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -192.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 66.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 42
+text = "Health: 3"
+
+[node name="DeathScreen" type="CanvasLayer" parent="."]
+script = ExtResource("5_1ainy")
+
+[node name="Label" type="Label" parent="DeathScreen"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -164.0
+offset_right = 252.0
+offset_bottom = -76.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 64
+text = "Game Over"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="DeathScreen"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -76.0
+offset_right = 252.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "Score: 0"
+horizontal_alignment = 1
+
+[node name="PlayButton" type="Button" parent="DeathScreen"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -272.0
+offset_top = 4.0
+offset_right = -24.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+text = "Play Again"
+
+[node name="MainMenu" type="Button" parent="DeathScreen"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = 4.0
+offset_right = 293.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+text = "Main Menu"
+
+[node name="Player" parent="." instance=ExtResource("4_km5ld")]
+BulletSpeed = 2000
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(2160, 2160)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+texture = SubResource("CompressedTexture2D_f2txt")

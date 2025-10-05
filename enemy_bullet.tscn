@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://na2qb7tw2bqg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rtl8c"]
+size = Vector2(24, 4)
+
+[node name="Bullet" type="RigidBody2D"]
+collision_layer = 2
+collision_mask = 5
+gravity_scale = 0.0
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 1
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 24, 0)
+width = 5.0
+default_color = Color(0.771779, 0.298785, 0.340769, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(12, 0)
+shape = SubResource("RectangleShape2D_rtl8c")

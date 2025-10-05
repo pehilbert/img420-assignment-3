@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://cbob18yy2hqcu"]
+[gd_scene load_steps=6 format=3 uid="uid://cbob18yy2hqcu"]
 
 [ext_resource type="Script" uid="uid://dmm0sk8bhjo3e" path="res://Enemy.cs" id="1_4gyqm"]
+[ext_resource type="PackedScene" uid="uid://na2qb7tw2bqg" path="res://enemy_bullet.tscn" id="2_qi2p4"]
 [ext_resource type="PackedScene" uid="uid://de5epea2mxxdq" path="res://entity_manager.tscn" id="3_epg4t"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_i3pqv"]
@@ -14,7 +15,9 @@ collision_layer = 8
 collision_mask = 5
 mass = 20.0
 gravity_scale = 0.0
+continuous_cd = 2
 script = ExtResource("1_4gyqm")
+BulletScene = ExtResource("2_qi2p4")
 
 [node name="EntityManager" parent="." instance=ExtResource("3_epg4t")]
 position = Vector2(0, 32)

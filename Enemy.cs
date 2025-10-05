@@ -2,20 +2,32 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 public partial class Enemy : RigidBody2D
 {
 	// Adjustable in the Inspector
-	[Export] public float MaxSpeed = 500f;
-	[Export] public float SeparationWeight = 30.0f;
-	[Export] public float AlignmentWeight = 3.0f;
+	[Export] public float MaxSpeed = 400f;
+	[Export] public float SeparationWeight = 2.0f;
+	[Export] public float AlignmentWeight = 5.0f;
 	[Export] public float CohesionWeight = 0.2f;
-	[Export] public float FollowWeight = 50.0f;
-	[Export] public float FollowRadius = 30.0f;
-	private List<Enemy> _neighbors = new();
+	[Export] public float FollowWeight = 300.0f;
+	[Export] public float FollowRadius = 700.0f;
+	[Export] public int PointValue = 100;
+	[Export] public int PlayerCollisionDamage = 1;
+	[Export] public int SelfCollisionDamage = 1;
+	[Export] public int BulletDamage = 1;
+	[Export] public double FireInterval = 2.0f;
+	[Export] public double FireIntervalVariance = 1.0f;
+    [Export] public float BulletSpeed = 800f;
+    [Export] public PackedScene BulletScene;
+
+    private List<Enemy> _neighbors = new();
 	private Area2D _detectionArea;
 	private RigidBody2D _target;
-	public override void _Ready()
+	private Timer _fireTimer;
+
+    public override void _Ready()
 	{
         _detectionArea = GetNode<Area2D>("DetectionArea");
 		_detectionArea.BodyEntered += OnBodyEntered;
@@ -26,12 +38,53 @@ public partial class Enemy : RigidBody2D
 		LinearVelocity = randomVelocity;
 
 		LookAt(Position + LinearVelocity);
-	}
+
+		_fireTimer = new Timer();
+		_fireTimer.WaitTime = FireInterval + GD.RandRange(-FireIntervalVariance, FireIntervalVariance);
+		_fireTimer.Autostart = true;
+		_fireTimer.Timeout += () =>
+		{
+			FireBullet();
+		};
+		AddChild(_fireTimer);
+		_fireTimer.Start();
+    }
 
 	public void SetTarget(RigidBody2D Target)
 	{
 		_target = Target;
 	}
+
+	public void FireBullet()
+	{
+        if (_target != null && IsInstanceValid(_target) && Position.DistanceTo(_target.GetPosition()) < FollowRadius)
+		{
+            var bullet = BulletScene.Instantiate<RigidBody2D>();
+			bullet.Position = Position;
+			bullet.LookAt(_target.Position);
+			bullet.LinearVelocity = new Vector2(BulletSpeed, 0).Rotated(bullet.Rotation);
+
+			// Enable contact monitoring for collision detection
+			bullet.ContactMonitor = true;
+
+			bullet.BodyEntered += (Node body) =>
+			{
+				if (!(body is Enemy))
+				{
+					var entityManager = body.GetNodeOrNull<EntityManager>("EntityManager");
+					if (entityManager != null)
+					{
+						entityManager.TakeDamage(BulletDamage);
+					}
+					bullet.QueueFree();
+				}
+			};
+
+            GetParent().AddChild(bullet);
+        }
+
+		_fireTimer.Start();
+    }
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -48,7 +101,10 @@ public partial class Enemy : RigidBody2D
 		LinearVelocity = LinearVelocity.LimitLength(MaxSpeed);
 		//GD.Print($"The value of my variable is: {Velocity}");
 
-		LookAt(Position + LinearVelocity);
+		if (_target != null && IsInstanceValid(_target))
+		{
+            LookAt(_target.Position);
+        }
 	}
 
 	private void OnBodyEntered(Node2D body)
@@ -114,7 +170,7 @@ public partial class Enemy : RigidBody2D
 
 	private Vector2 Centralization()
 	{
-		if (_target != null)
+		if (_target != null && IsInstanceValid(_target))
 		{
 			////GD.Print($"The value of my variable is: {_target.GetPosition()}");
 			////GD.Print($"The value of my variable is: {Position}");

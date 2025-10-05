@@ -15,7 +15,7 @@ public partial class Asteroid : RigidBody2D
 		// When something collides with the asteroid, damage it and damage self
 		BodyEntered += (Node body) =>
 		{
-			GD.Print("Collision with " + body.Name);
+			// GD.Print("Collision with " + body.Name);
 
 			var bodyEntityManager = body.GetNodeOrNull<EntityManager>("EntityManager");
 

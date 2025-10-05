@@ -10,11 +10,12 @@ public partial class Player : RigidBody2D
 	[Export] public double Damage = 1.0f;
 	[Export] public Color InvincibilityColor = new Color(1, 1, 1, 0.5f);
 	[Export] public PackedScene BulletScene;
+    public EntityManager EntityManager;
 
-	private bool canFire = true;
+    private bool canFire = true;
 	private Timer fireTimer;
 
-	public override void _Ready()
+    public override void _Ready()
 	{
 		base._Ready();
 
@@ -23,11 +24,11 @@ public partial class Player : RigidBody2D
 		fireTimer.Timeout += () => canFire = true;
 		AddChild(fireTimer);
 
-		var entityManager = GetNodeOrNull<EntityManager>("EntityManager");
+		EntityManager = GetNodeOrNull<EntityManager>("EntityManager");
 		
-		if (entityManager != null)
+		if (EntityManager != null)
 		{
-			entityManager.InvincibilityChanged += (bool invincible) =>
+            EntityManager.InvincibilityChanged += (bool invincible) =>
 			{
 				var sprite = GetNodeOrNull<Polygon2D>("Polygon2D");
 				if (sprite != null)
@@ -36,7 +37,20 @@ public partial class Player : RigidBody2D
 				}
 			};
 		}
-	}
+
+		BodyEntered += (Node body) =>
+		{
+			if ((body is Enemy enemy))
+			{
+				var enemyEntityManager = enemy.GetNodeOrNull<EntityManager>("EntityManager");
+				if (enemyEntityManager != null)
+				{
+                    enemyEntityManager.TakeDamage(enemy.SelfCollisionDamage);
+					EntityManager.TakeDamage(enemy.PlayerCollisionDamage);
+				}
+			}
+		};
+    }
 
 	public override void _PhysicsProcess(double delta)
 	{

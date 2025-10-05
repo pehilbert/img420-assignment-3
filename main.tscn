@@ -1,70 +1,44 @@
-[gd_scene load_steps=8 format=3 uid="uid://dv3oqegdy8j8r"]
+[gd_scene load_steps=3 format=3 uid="uid://ms788in3mbe3"]
 
-[ext_resource type="PackedScene" uid="uid://dk6qx2dsegg1j" path="res://player.tscn" id="1_0xm2m"]
-[ext_resource type="Script" uid="uid://bo4go6eynijmt" path="res://Main.cs" id="1_h2yge"]
-[ext_resource type="PackedScene" uid="uid://cbob18yy2hqcu" path="res://enemy.tscn" id="2_1bvp3"]
-[ext_resource type="PackedScene" uid="uid://bvotkpgyp4vvw" path="res://asteroid.tscn" id="2_h2yge"]
-[ext_resource type="Texture2D" uid="uid://cadb45sqd4745" path="res://textures/background.jpg" id="5_lquwl"]
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_lquwl"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_lquwl"]
+[ext_resource type="Script" uid="uid://di2t7jpe0ad7w" path="res://Main.cs" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://cadb45sqd4745" path="res://textures/background.jpg" id="2_0xm2m"]
 
 [node name="Main" type="Node2D"]
-script = ExtResource("1_h2yge")
-EnemyScene = ExtResource("2_1bvp3")
-AsteroidScene = ExtResource("2_h2yge")
+script = ExtResource("1_ig7tw")
 
-[node name="WestBoundary" type="RigidBody2D" parent="."]
-position = Vector2(-2000, 0)
-rotation = 1.5708
-collision_layer = 783
-collision_mask = 783
-physics_material_override = SubResource("PhysicsMaterial_lquwl")
-gravity_scale = 0.0
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WestBoundary"]
-shape = SubResource("WorldBoundaryShape2D_lquwl")
+[node name="Label" type="Label" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -116.0
+offset_right = 252.0
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 64
+text = "Spaceship Game"
+horizontal_alignment = 1
 
-[node name="EastBoundary" type="RigidBody2D" parent="."]
-position = Vector2(2000, 0)
-rotation = -1.5708
-collision_layer = 783
-collision_mask = 783
-physics_material_override = SubResource("PhysicsMaterial_lquwl")
-gravity_scale = 0.0
+[node name="PlayButton" type="Button" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = 4.0
+offset_right = 57.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+text = "Play"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EastBoundary"]
-shape = SubResource("WorldBoundaryShape2D_lquwl")
-
-[node name="SouthBoundary" type="RigidBody2D" parent="."]
-position = Vector2(0, 2000)
-collision_layer = 783
-collision_mask = 783
-physics_material_override = SubResource("PhysicsMaterial_lquwl")
-gravity_scale = 0.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SouthBoundary"]
-shape = SubResource("WorldBoundaryShape2D_lquwl")
-
-[node name="NorthBoundary" type="RigidBody2D" parent="."]
-position = Vector2(0, -2000)
-rotation = 3.14159
-collision_layer = 783
-collision_mask = 783
-physics_material_override = SubResource("PhysicsMaterial_lquwl")
-gravity_scale = 0.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="NorthBoundary"]
-shape = SubResource("WorldBoundaryShape2D_lquwl")
-
-[node name="Player" parent="." instance=ExtResource("1_0xm2m")]
-BulletSpeed = 2000
-
-[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
-
-[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(2160, 2160)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-texture = ExtResource("5_lquwl")
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(1920, 1080)
+texture = ExtResource("2_0xm2m")
